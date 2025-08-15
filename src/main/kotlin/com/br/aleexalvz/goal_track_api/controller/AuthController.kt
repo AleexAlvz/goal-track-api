@@ -40,6 +40,6 @@ class AuthController(
         val authToken = UsernamePasswordAuthenticationToken(request.email, request.password)
         authenticationManager.authenticate(authToken) // valida email e senha
         val token = jwtUtil.generateToken(request.email)
-        return AuthResponse(token)
+        return AuthResponse("Bearer $token")
     }
 }

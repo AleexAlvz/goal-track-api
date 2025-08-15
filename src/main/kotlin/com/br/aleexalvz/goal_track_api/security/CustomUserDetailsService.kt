@@ -1,4 +1,4 @@
-package com.br.aleexalvz.goal_track_api.service
+package com.br.aleexalvz.goal_track_api.security
 
 import com.br.aleexalvz.goal_track_api.repository.UserRepository
 import org.springframework.security.core.authority.SimpleGrantedAuthority
