@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Goal Track API" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.br.aleexalvz.goal_track_api.GoalTrackApiApplicationKt" />
+    <module name="goal-track-api.main" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
