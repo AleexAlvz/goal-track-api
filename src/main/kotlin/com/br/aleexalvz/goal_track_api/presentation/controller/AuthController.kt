@@ -1,7 +1,6 @@
 package com.br.aleexalvz.goal_track_api.presentation.controller
 
 import com.br.aleexalvz.goal_track_api.application.service.AuthService
-import com.br.aleexalvz.goal_track_api.infrastructure.security.JwtUtil
 import com.br.aleexalvz.goal_track_api.presentation.dto.auth.AuthResponse
 import com.br.aleexalvz.goal_track_api.presentation.dto.auth.LoginRequest
 import com.br.aleexalvz.goal_track_api.presentation.dto.auth.SignupRequest
@@ -15,8 +14,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/auth")
 class AuthController(
     private val authService: AuthService,
-    private val authenticationManager: AuthenticationManager,
-    private val jwtUtil: JwtUtil
+    private val authenticationManager: AuthenticationManager
 ) {
 
     @PostMapping("/register")
@@ -29,9 +27,13 @@ class AuthController(
     fun login(
         @Valid @RequestBody loginRequest: LoginRequest
     ): AuthResponse {
-        val authToken = UsernamePasswordAuthenticationToken(loginRequest.email, loginRequest.password)
+        val authToken = UsernamePasswordAuthenticationToken(
+            loginRequest.email,
+            loginRequest.password
+        )
+
         authenticationManager.authenticate(authToken)
-        val token = jwtUtil.generateToken(loginRequest.email)
-        return AuthResponse(token = token)
+
+        return authService.login(loginRequest.email)
     }
 }

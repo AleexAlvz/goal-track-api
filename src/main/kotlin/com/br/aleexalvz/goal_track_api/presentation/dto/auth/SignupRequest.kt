@@ -21,5 +21,13 @@ data class SignupRequest(
     val password: String,
 
     @field:NotBlank
-    val confirmPassword: String
+    val confirmPassword: String,
+
+    @field:NotBlank(message = "Nome completo é obrigatório")
+    @field:Size(min = 3, max = 100, message = "Nome deve ter entre 3 e 100 caracteres")
+    @field:Pattern(
+        regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ]+(\\s+[A-Za-zÀ-ÖØ-öø-ÿ]+)+$",
+        message = "Informe o nome completo (nome e sobrenome)"
+    )
+    val fullName: String
 )

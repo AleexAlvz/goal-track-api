@@ -1,13 +1,13 @@
 package com.br.aleexalvz.goal_track_api.infrastructure.security
 
-import org.springframework.stereotype.Component
-import java.util.*
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import org.springframework.stereotype.Component
+import java.util.*
 
 @Component
 class JwtUtil {
-    private val secret = "mysecretkey123456" // troque por algo seguro
+    private val secret = "mysecretkey123456" // TODO replace it for better key
     private val expirationMs = 1000 * 60 * 60 // 1 hora
 
     fun generateToken(email: String): String {

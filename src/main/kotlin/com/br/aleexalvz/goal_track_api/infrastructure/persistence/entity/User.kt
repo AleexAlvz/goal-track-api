@@ -15,5 +15,8 @@ data class User(
     val password: String,
 
     @Column(nullable = false)
+    val fullName: String,
+
+    @Column(nullable = false)
     val role: String = "USER"
 )
