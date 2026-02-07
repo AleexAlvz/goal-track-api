@@ -4,8 +4,10 @@ import com.br.aleexalvz.goal_track_api.domain.exception.EmailAlreadyExistsExcept
 import com.br.aleexalvz.goal_track_api.infrastructure.persistence.entity.User
 import com.br.aleexalvz.goal_track_api.infrastructure.persistence.repository.UserRepository
 import com.br.aleexalvz.goal_track_api.infrastructure.security.JwtUtil
-import com.br.aleexalvz.goal_track_api.presentation.dto.auth.AuthResponse
+import com.br.aleexalvz.goal_track_api.infrastructure.security.TokenType
+import com.br.aleexalvz.goal_track_api.presentation.dto.auth.LoginResponse
 import com.br.aleexalvz.goal_track_api.presentation.dto.auth.SignupRequest
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -31,14 +33,36 @@ class AuthService(
         userRepository.save(user)
     }
 
-    fun login(email: String): AuthResponse {
+    fun login(email: String): LoginResponse {
         val user = userRepository.findByEmail(email)
             ?: throw UsernameNotFoundException("User not found")
 
-        val token = jwtUtil.generateToken(user.email)
+        val refreshToken = jwtUtil.generateRefreshToken(user.email)
+        val authToken = jwtUtil.generateAuthToken(user.email)
 
-        return AuthResponse(
-            token = token,
+        return LoginResponse(
+            refreshToken = refreshToken,
+            authToken = authToken,
+            email = user.email,
+            fullName = user.fullName
+        )
+    }
+
+    fun refreshSession(refreshToken: String): LoginResponse {
+        if (!jwtUtil.validateToken(refreshToken, TokenType.RefreshToken)) {
+            throw BadCredentialsException("Invalid refresh token")
+        }
+
+        val email = jwtUtil.getEmailFromToken(refreshToken)
+        val user = userRepository.findByEmail(email)
+            ?: throw UsernameNotFoundException("User not found")
+
+        val newRefreshToken = jwtUtil.generateRefreshToken(user.email)
+        val newAuthToken = jwtUtil.generateAuthToken(user.email)
+
+        return LoginResponse(
+            refreshToken = newRefreshToken,
+            authToken = newAuthToken,
             email = user.email,
             fullName = user.fullName
         )

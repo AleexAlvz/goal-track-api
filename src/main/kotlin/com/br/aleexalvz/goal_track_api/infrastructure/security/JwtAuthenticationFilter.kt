@@ -30,7 +30,7 @@ class JwtAuthenticationFilter(
         val authHeader = request.getHeader("Authorization")
         val token = authHeader?.takeIf { it.startsWith("Bearer ") }?.substring(7)
 
-        if (token != null && jwtUtil.validateToken(token)) {
+        if (token != null && jwtUtil.validateToken(token, TokenType.AuthToken)) {
             val email = jwtUtil.getEmailFromToken(token)
             val userDetails = userDetailsService.loadUserByUsername(email)
 

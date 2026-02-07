@@ -8,18 +8,34 @@ import java.util.*
 @Component
 class JwtUtil {
     private val secret = "mysecretkey123456" // TODO replace it for better key
-    private val expirationMs = 1000 * 60 * 60 // 1 hora
 
-    fun generateToken(email: String): String {
+    private val authExpirationMs = 1000 * 60 * 15 // 15 minutes
+    private val refreshExpirationMs = 1000 * 60 * 60 * 24 * 7 // 7 days
+    private val tokenTypeClaimKey = "tokenType"
+
+    fun generateAuthToken(email: String): String {
         return JWT.create()
             .withSubject(email)
-            .withExpiresAt(Date(System.currentTimeMillis() + expirationMs))
+            .withClaim(tokenTypeClaimKey, TokenType.AuthToken.type)
+            .withExpiresAt(Date(System.currentTimeMillis() + authExpirationMs))
             .sign(Algorithm.HMAC256(secret))
     }
 
-    fun validateToken(token: String): Boolean {
+    fun generateRefreshToken(email: String): String {
+        return JWT.create()
+            .withSubject(email)
+            .withClaim(tokenTypeClaimKey, TokenType.RefreshToken.type)
+            .withExpiresAt(Date(System.currentTimeMillis() + refreshExpirationMs))
+            .sign(Algorithm.HMAC256(secret))
+    }
+
+    fun validateToken(token: String, tokenType: TokenType): Boolean {
         return try {
-            JWT.require(Algorithm.HMAC256(secret)).build().verify(token)
+            JWT.decode(token)
+            JWT.require(Algorithm.HMAC256(secret))
+                .withClaim(tokenTypeClaimKey, tokenType.type)
+                .build()
+                .verify(token)
             true
         } catch (e: Exception) {
             false
