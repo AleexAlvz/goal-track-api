@@ -2,6 +2,7 @@ package com.br.aleexalvz.goal_track_api.presentation.controller
 
 import com.br.aleexalvz.goal_track_api.application.service.GoalService
 import com.br.aleexalvz.goal_track_api.presentation.dto.goal.CreateGoalRequest
+import com.br.aleexalvz.goal_track_api.presentation.dto.goal.GetAllGoalsResponse
 import com.br.aleexalvz.goal_track_api.presentation.dto.goal.GoalResponse
 import com.br.aleexalvz.goal_track_api.presentation.dto.goal.UpdateGoalRequest
 import org.springframework.http.HttpStatus
@@ -22,8 +23,9 @@ class GoalController(
         goalService.findById(id)
 
     @GetMapping
-    fun findAll(): List<GoalResponse> =
-        goalService.findAll()
+    fun findAll(): GetAllGoalsResponse = GetAllGoalsResponse(
+        goals = goalService.findAll()
+    )
 
     @PutMapping("/{id}")
     fun update(
